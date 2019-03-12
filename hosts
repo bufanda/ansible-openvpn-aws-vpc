@@ -1,2 +1,2 @@
 [openvpn]
-52.59.201.166 ansible_ssh_user=ubuntu
+35.159.52.166 ansible_user=administrator

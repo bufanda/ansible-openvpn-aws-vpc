@@ -21,14 +21,14 @@ openvpn_dhparam: "{{ openvpn_path }}/dh{{ openvpn_key_size }}.pem"
 openvpn_hmac_firewall: "{{ openvpn_path }}/ta.key"
 openvpn_server: "tendo.local"
 openvpn_port: "443"
-openvpn_protocol: "udp"
+openvpn_protocol: "tcp"
 
 # It assume that the subnet mask is /24
-openvpn_network: "10.40.0.0"
+openvpn_network: "10.8.0.0"
 
 # Private Subnet(s) in VPC that you want to reach through OPENVPN, it assume that the subnet mask is /24
 private_networks:
-  - 10.40.1.0
+  - 172.31.32.0
 
 # OPENVPN rules for iptables
 iptables_openvpn_rules:
@@ -36,7 +36,7 @@ iptables_openvpn_rules:
   - /sbin/iptables -A INPUT -p tcp -m tcp --dport 22 -j ACCEPT 
   - /sbin/iptables -A FORWARD -s {{ openvpn_network }}/24 -j ACCEPT
   - /sbin/iptables -A FORWARD -j REJECT
-  - /sbin/iptables -t nat -A POSTROUTING -s {{ openvpn_network }}/24 -o {{ ansible_default_ipv4.interface }} -j MASQUERADE
+  - /sbin/iptables -t nat -A POSTROUTING -s {{ openvpn_network }}/16 -o {{ ansible_default_ipv4.interface }} -j MASQUERADE
 
 # Please mentioned the clients' name at this location
 openvpn_clients:
