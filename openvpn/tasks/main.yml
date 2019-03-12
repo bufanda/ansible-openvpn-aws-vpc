@@ -157,7 +157,7 @@
   command: iptables -n -t nat -L
   register: iptables_nat_rules
   changed_when: no
-  # always_run: yes
+  always_run: yes
 
 - block:
 

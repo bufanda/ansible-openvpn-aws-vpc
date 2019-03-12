@@ -1,2 +1,2 @@
--en [openvpn]
-3.121.224.74 ansible_user=administrator
+[openvpn]
+52.59.10.144 ansible_user=administrator
