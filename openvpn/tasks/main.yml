@@ -1,10 +1,9 @@
 ---
 - name: Install the OpenVPN
   apt:
-    name: "{{ item }}"
+    name:  "{{ ubuntu_openvpn_pkgs }}"
     state: present
     update_cache: yes
-  with_items: "{{ ubuntu_openvpn_pkgs }}"
  
 - name: Set ip forwarding in the sysctl file and reload if necessary
   sysctl:
@@ -157,7 +156,6 @@
   command: iptables -n -t nat -L
   register: iptables_nat_rules
   changed_when: no
-  always_run: yes
 
 - block:
 
@@ -166,7 +164,7 @@
       with_items: "{{ iptables_openvpn_rules }}"
 
     - name: Save NAT iptables rules
-      command: service iptables-persistent save
+      command: service netfilter-persistent save
 
   when: iptables_nat_rules.stdout.find("MASQUERADE") == -1
 
@@ -193,6 +191,21 @@
     backup: yes
   notify:
     - Restart DnsMasq
+
+- name: Enable rc-local.service
+  service:
+    name: rc-local
+    enabled: true
+    state: started
+  when: "ansible_distribution_release == 'xenial'"
+
+- name: create rc.local file
+  file:
+    path: /etc/rc.local
+    state: touch
+    owner: 0
+    group: 0
+    mode: 644
 
 - name: Update the "rc.local" file
   lineinfile:
