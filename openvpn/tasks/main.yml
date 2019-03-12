@@ -157,7 +157,7 @@
   command: iptables -n -t nat -L
   register: iptables_nat_rules
   changed_when: no
-  always_run: yes
+  # always_run: yes
 
 - block:
 
@@ -166,7 +166,7 @@
       with_items: "{{ iptables_openvpn_rules }}"
 
     - name: Save NAT iptables rules
-      command: service iptables-persistent save
+      command: service netfilter-persistent save
 
   when: iptables_nat_rules.stdout.find("MASQUERADE") == -1
 
@@ -194,14 +194,14 @@
   notify:
     - Restart DnsMasq
 
-- name: Update the "rc.local" file
-  lineinfile:
-    dest: /etc/rc.local
-    regexp: "/etc/init.d/dnsmasq restart"
-    line: "/etc/init.d/dnsmasq restart"
-    insertbefore: "exit 0"
-    backup: yes
-    state: present
+# - name: Update the "rc.local" file
+#   lineinfile:
+#     dest: /etc/rc.local
+#     regexp: "/etc/init.d/dnsmasq restart"
+#     line: "/etc/init.d/dnsmasq restart"
+#     insertbefore: "exit 0"
+#     backup: yes
+#     state: present
 
 - name: Retrieve the files that clients will need in order to connect to the OpenVPN server
   fetch:

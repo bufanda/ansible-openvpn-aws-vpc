@@ -1,7 +1,8 @@
 ---
 - name: Restart Openvpn
   service:
-    name: openvpn
+    name: openvpn@server
+    enabled: true
     state: restarted
 
 - name: Restart DnsMasq
